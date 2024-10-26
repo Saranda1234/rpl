@@ -7,13 +7,19 @@ import net.enjoy.springboot.premierleague.entity.User;
 import net.enjoy.springboot.premierleague.repository.UserRepository;
 import net.enjoy.springboot.premierleague.service.EmailService;
 import net.enjoy.springboot.premierleague.service.UserService;
+import net.enjoy.springboot.premierleague.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.context.Context;
 
 import java.security.Principal;
@@ -31,20 +37,11 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private UserServiceImpl userServiceImpl;
+
+    @Autowired
     public AuthController(UserService userService) {
         this.userService = userService;
-    }
-
-    @GetMapping("/")
-    public String home() {
-        return "index";
-    }
-
-    @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
-        UserDto user = new UserDto();
-        model.addAttribute("user", user);
-        return "register";
     }
 
     @PostMapping("/register/save")
@@ -68,29 +65,31 @@ public class AuthController {
     }
 
     @GetMapping("/users")
-    public String users(Model model) {
-        List<User> users = userService.findAllUsers();
-        model.addAttribute("users", users);
-        return "users";
-    }
+    public String users(@RequestParam(value = "search", required = false) String search,
+                        @RequestParam(value = "page", defaultValue = "0") int page,
+                        @RequestParam(value = "size", defaultValue = "5") int size,
+                        @RequestParam(value = "sort", defaultValue = "id") String sort,
+                        @RequestParam(value = "dir", defaultValue = "asc") String dir,
+                        Model model) {
+        if(page < 0) page = 0;
+        Pageable pageable = PageRequest.of(page, size, dir.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
+        Page<User> userPage;
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
-    @GetMapping("/forgot-password")
-    public String forgotPwd() {
-        return "forgot-password";
-    }
-
-    @GetMapping("/reset-password")
-    public String resetPwd(@RequestParam("email") String email,Model model) {
-        if(email==null){
-            return "redirect:/dashboard";
+        if (search != null && !search.isEmpty()) {
+            userPage = userServiceImpl.searchUsers(search, pageable);
+        } else {
+            userPage = userServiceImpl.findAllUsers(pageable);
         }
-        model.addAttribute("email", email);
-        return "reset-password";
+
+        model.addAttribute("users", userPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", userPage.getTotalPages());
+        model.addAttribute("totalItems", userPage.getTotalElements());
+        model.addAttribute("sortField", sort);
+        model.addAttribute("sortDir", dir);
+        model.addAttribute("reverseSortDir", dir.equals("asc") ? "desc" : "asc");
+        model.addAttribute("search", search);
+        return "users";
     }
 
     @PostMapping("/forgot-password")
@@ -174,8 +173,13 @@ public class AuthController {
     }
 
     @GetMapping("/users/delete/{id}")
-    public String deleteUser(@PathVariable("id") long id, Model model) {
-        userService.deleteUser(id);
+    public String deleteUser(@PathVariable("id") long id, RedirectAttributes redirectAttributes) {
+        try{
+           userService.deleteUser(id);
+            redirectAttributes.addFlashAttribute("messageSuccess","User deleted successfully");
+        } catch (Exception e){
+            redirectAttributes.addFlashAttribute("messageError","Something went wrong: "+e.getMessage());
+        }
         return "redirect:/users";
     }
 }

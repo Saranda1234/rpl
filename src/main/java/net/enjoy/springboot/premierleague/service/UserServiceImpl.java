@@ -5,6 +5,8 @@ import net.enjoy.springboot.premierleague.entity.Role;
 import net.enjoy.springboot.premierleague.entity.User;
 import net.enjoy.springboot.premierleague.repository.RoleRepository;
 import net.enjoy.springboot.premierleague.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -89,5 +91,13 @@ public class UserServiceImpl implements UserService {
         Role role = new Role();
         role.setName("ROLE_USER");
         return roleRepository.save(role);
+    }
+
+    public Page<User> findAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    public Page<User> searchUsers(String search, Pageable pageable) {
+        return userRepository.findByFirstNameContainingOrLastNameContainingOrEmailContaining(search, search, search, pageable);
     }
 }

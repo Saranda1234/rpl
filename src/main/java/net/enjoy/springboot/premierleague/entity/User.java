@@ -37,10 +37,13 @@ public class User {
     @Column(nullable = false)
     private String phoneNumber;
 
+    @Column
+    private String profilePicture;
+
     @Column(nullable = false)
     private LocalDate dateOfBirth;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
             name = "users_roles",
             joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
