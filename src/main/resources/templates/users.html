@@ -6,78 +6,145 @@
     <title>RWANDA PREMIER LEAGUE - Players</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Body Styling */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary-blue: #003B95;
+            --secondary-blue: #0061F7;
+            --light-blue: #E6F0FF;
+            --dark-blue: #002B6B;
+        }
+
         body {
-            background: linear-gradient(to right, #2c5282, #4299e1);
-            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
         }
 
-        /* Navbar Styling */
         .navbar {
-            background-color: #2c5282;
+            background: rgba(0, 59, 149, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 59, 149, 0.2);
         }
 
         .navbar-brand {
-            font-weight: bold;
+            font-weight: 700;
             color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .nav-link {
             color: white !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        /* Header */
         h1 {
-            color: #fff;
+            color: white;
             text-align: center;
-            margin-top: 30px;
-            font-size: 36px;
+            margin: 2rem 0;
+            font-weight: 700;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        /* Table Styling */
         .table-container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            margin-top: 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
         }
 
-        .table thead {
-            background-color: #2c5282;
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group input {
+            border-radius: 8px 0 0 8px;
+            border: 2px solid var(--light-blue);
+            padding: 0.75rem 1rem;
+        }
+
+        .input-group button {
+            border-radius: 0 8px 8px 0;
+            background: var(--primary-blue);
             color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
         }
 
-        .table thead a{
+        .table {
+            margin-bottom: 2rem;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+            border: none;
+        }
+
+        .table thead th a {
+            color: white !important;
             text-decoration: none;
-            color: white;
+        }
+
+        .table tbody tr {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 59, 149, 0.1);
+            transition: all 0.3s ease;
         }
 
         .table tbody tr:hover {
-            background-color: #f1f1f1;
+            background-color: var(--light-blue);
+            transform: translateY(-2px);
         }
 
-        /* Button Styling */
         .btn-primary {
-            background-color: #2c5282;
+            background: var(--primary-blue);
             border: none;
         }
 
         .btn-primary:hover {
-            background-color: #234669;
+            background: var(--secondary-blue);
         }
 
         .btn-danger {
-            background-color: #e53e3e;
+            background: #dc3545;
             border: none;
         }
 
-        .btn-danger:hover {
-            background-color: #c53030;
+        .pagination {
+            gap: 4px;
         }
 
-        /* Responsive Design */
+        .page-link {
+            color: var(--primary-blue);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .page-item.active .page-link {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .alert {
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: none;
+        }
+
         @media (max-width: 768px) {
             .table thead {
                 display: none;
@@ -90,12 +157,16 @@
 
             .table tr {
                 margin-bottom: 15px;
+                background: white;
+                border-radius: 8px;
+                overflow: hidden;
             }
 
             .table td {
                 text-align: right;
                 padding-left: 50%;
                 position: relative;
+                border-bottom: 1px solid var(--light-blue);
             }
 
             .table td:before {
@@ -113,26 +184,29 @@
 <body>
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/}"><img src="https://pbs.twimg.com/profile_images/1788231088302653440/5xKfAdI8_200x200.jpg" width="40" height="40" alt="rpl"/>RWANDA PREMIER LEAGUE</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" th:href="@{/}">
+            <img src="https://pbs.twimg.com/profile_images/1788231088302653440/5xKfAdI8_200x200.jpg" width="40" height="40" alt="rpl"/>
+            RWANDA PREMIER LEAGUE
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/dashboard}">Dashboard</a>
+                    <a class="nav-link active" th:href="@{/dashboard}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/logout}" th:text="#{logout}">Logout</a>
+                    <a class="nav-link active" th:href="@{/logout}" th:text="#{logout}">Logout</a>
                 </li>
             </ul>
         </div>
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" data-bs-toggle="dropdown">
                     <span th:text="${#locale.language == 'en' ? 'English' : #locale.language == 'rw' ? 'Kinyarwanda' : 'Français'}"></span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" th:href="@{''(lang=en)}">English</a></li>
                     <li><a class="dropdown-item" th:href="@{''(lang=rw)}">Kinyarwanda</a></li>
                     <li><a class="dropdown-item" th:href="@{''(lang=fr)}">Français</a></li>
@@ -142,23 +216,21 @@
     </div>
 </nav>
 
-<div class="container mt-5">
+<div class="container">
     <h1 th:text="#{registered_players}">Registered Players</h1>
-    <div th:if="${messageError}">
-        <div class="alert alert-danger" th:text="${messageError}"></div>
-    </div>
-    <div th:if="${messageSuccess}">
-        <div class="alert alert-success" th:text="${messageSuccess}"></div>
-    </div>
+
+    <div th:if="${messageError}" class="alert alert-danger" th:text="${messageError}"></div>
+    <div th:if="${messageSuccess}" class="alert alert-success" th:text="${messageSuccess}"></div>
+
     <div class="table-container">
         <form th:action="@{/users}" method="get">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Search" name="search" th:value="${search}">
-                <button class="btn btn-outline-secondary" type="submit">Search</button>
+            <div class="input-group">
+                <input type="text" class="form-control" th:placeholder="#{search}" name="search" th:value="${search}">
+                <button class="btn" type="submit" th:text="#{search}">Search</button>
             </div>
         </form>
 
-        <table class="table table-hover">
+        <table class="table">
             <thead>
             <tr>
                 <th><a th:href="@{/users(sort='firstName', dir=${sortField == 'firstName' ? reverseSortDir : 'asc'})}">First Name</a></th>
@@ -172,13 +244,13 @@
             </thead>
             <tbody>
             <tr th:each="user: ${users}">
-                <td th:text="${user.firstName}"></td>
-                <td th:text="${user.lastName}"></td>
-                <td th:text="${user.email}"></td>
-                <td th:text="${user.roles[0].name}"></td>
-                <td th:text="${user.phoneNumber}"></td>
-                <td th:text="${#temporals.format(user.dateOfBirth, 'dd-MM-yyyy')}"></td>
-                <td>
+                <td th:text="${user.firstName}" data-label="First Name"></td>
+                <td th:text="${user.lastName}" data-label="Last Name"></td>
+                <td th:text="${user.email}" data-label="Email"></td>
+                <td th:text="${user.roles[0].name}" data-label="Role"></td>
+                <td th:text="${user.phoneNumber}" data-label="Phone Number"></td>
+                <td th:text="${#temporals.format(user.dateOfBirth, 'dd-MM-yyyy')}" data-label="Date of Birth"></td>
+                <td data-label="Actions">
                     <a th:href="@{/users/edit/{id}(id=${user.id})}" class="btn btn-primary btn-sm">Edit</a>
                     <a th:href="@{/users/delete/{id}(id=${user.id})}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
                 </td>
